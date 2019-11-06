@@ -13,8 +13,18 @@ class Extraction(object):
 		self.bigMat = pd.DataFrame(index = self.entitled, columns=self.entitled)
 
 
+	def tuppletsWhichRespectNConditions(self, listConds):
+		dfTemp = self.vect.copy() #peut etre deep copy
+		for cond in listConds:
+			dfTemp = getLinesFromVectAndCond(dfTemp,cond)
 
-	def getLineWhichRespect(self,cond):
+		return dfTemp
+
+	def getLinesFromVectAndCond(self,vect,cond):
+		return vect.query(cond)
+
+
+	def getLinesWhichRespect(self,cond):
 		return self.vect.query(cond)
 
 	def sumUp(self,vector):
@@ -34,7 +44,7 @@ class Extraction(object):
 			#ind = e.find(',')
 			#e = e[:ind] + "" + e[ind:]
 			request += e+ " > 0"
-			ll.append(self.sumUp(self.getLineWhichRespect(request)))
+			ll.append(self.sumUp(self.getLinesWhichRespect(request)))
 			request=""
 		self.bigMat = pd.DataFrame(data= ll,index = self.entitled, columns=self.entitled)
 		print(self.bigMat)
