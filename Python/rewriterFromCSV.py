@@ -88,6 +88,7 @@ if __name__ == "__main__":
 	 			print(rw.sumUpToDict())
 	 			ex = Extraction(rw.dataFrame)
 	 			ex.bigMatConstructor()
+	 			print(ex.bigMat.loc["LateAirCraftDelay_short",:])
 
 
 	 		else:
