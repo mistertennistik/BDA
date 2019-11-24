@@ -14,7 +14,13 @@ from wordcloud import WordCloud
 
 
 
+
+
 from extraction import Extraction
+
+from sunBurst import SunBurst
+
+
 
 class RewriterFromCSV(object):
 
@@ -82,13 +88,21 @@ if __name__ == "__main__":
  			voc = Vocabulary(sys.argv[1])
 	 		if os.path.isfile(sys.argv[2]): 
 	 			rw = RewriterFromCSV(voc, sys.argv[2])
-	 			#rw.readAndRewrite()
+	 			rw.readAndRewrite()
 	 			#rw.wordCloudGenerator()
 	 			#print(rw.dataFrame)
-	 			print(rw.sumUpToDict())
+	 			#print(rw.sumUpToDict())
 	 			ex = Extraction(rw.dataFrame)
+
+	 			print(ex.sumUp(rw.dataFrame))
+
+	 			#print(ex.tuppletsWhichRespectNConditions(["AirTime_short>0.6","WeatherDelay_none==1"]))
 	 			ex.bigMatConstructor()
-	 			print(ex.bigMat.loc["LateAirCraftDelay_short",:])
+	 			#print(ex.bigMat.loc["LateAirCraftDelay_short",:])
+	 			sb = SunBurst(ex.bigMat)
+	 			sb.showSunBurst()
+
+
 
 
 	 		else:
