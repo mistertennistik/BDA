@@ -8,10 +8,10 @@ import math
 
 class SunBurst(object):
 
-	def __init__(self,bigMat):
+	def __init__(self,bigMat,dicAssoc = None):
 
 		self.df = bigMat.fillna(0)
-		self.MIN = 0.2
+		self.MIN = 0.0
 		
 		self.centerOfSun = ['ArrDelay_short','ArrDelay_long','ArrDelay_veryLong','ArrDelay_early','ArrDelay_onTime'] # ,'ArrDelay_veryLong','ArrDelay_early','ArrDelay_onTime'
 		self.trace = None
@@ -71,8 +71,7 @@ class SunBurst(object):
 			self.values.append(self.df['total'][exp]/totalOfSatArrDelay*100) # quelle valeur ajouter ?  int(self.df['total'][exp]/totalOfSatArrDelay*100)
 		
 
-		print("labels == "+ str(self.labels))	
-		print("values == "+ str(self.values))		
+	
 		for exp in self.centerOfSun :
 			for A in enumerate(self.df[exp]):
 				if A[1] > self.MIN and (self.df.columns[A[0]] not in self.centerOfSun): 
@@ -80,8 +79,7 @@ class SunBurst(object):
 					self.parents.append(exp)
 					#print(self.df['total'][exp])
 					self.values.append(A[1]/self.df['total'][exp]*100)
-		print("labels == "+ str(self.labels))	
-		print("values == "+ str(self.values))			
+		
 		
 
 			

@@ -22,6 +22,7 @@ from sunBurst import SunBurst
 
 
 
+
 class RewriterFromCSV(object):
 
 	def __init__(self, voc, df):
@@ -89,18 +90,18 @@ if __name__ == "__main__":
 	 		if os.path.isfile(sys.argv[2]): 
 	 			rw = RewriterFromCSV(voc, sys.argv[2])
 	 			rw.readAndRewrite()
+
+	 			#Pour générer le wordCloud
 	 			#rw.wordCloudGenerator()
-	 			#print(rw.dataFrame)
-	 			#print(rw.sumUpToDict())
+
+	 			#création d'un objet extraction
 	 			ex = Extraction(rw.dataFrame)
 
-	 			print(ex.sumUp(rw.dataFrame))
+	 			
 
-	 			#print(ex.tuppletsWhichRespectNConditions(["AirTime_short>0.6","WeatherDelay_none==1"]))
-	 			ex.bigMatConstructor()
-	 			#print(ex.bigMat.loc["LateAirCraftDelay_short",:])
-	 			sb = SunBurst(ex.bigMat)
-	 			sb.showSunBurst()
+	 			# pour créer un sunBurst
+	 			sb2 = SunBurst(ex.matFromDictConstructor())
+	 			sb2.showSunBurst()
 
 
 

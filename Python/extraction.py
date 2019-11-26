@@ -8,9 +8,11 @@ class Extraction(object):
 		self.border = 0.6 # constant to keep only assoc > constant in sumUpAssoc
 		
 		self.entitled = vector.columns
-		self.sumUpAssoc = {k: [] for k in vector.columns} # sum up of each prop with others prop associated
+		self.sumUpAssoc = {k: dict() for k in vector.columns} # sum up of each prop with others prop associated
 
 		self.bigMat = pd.DataFrame(index = self.entitled, columns=self.entitled)
+
+		self.matFromDict = None
 
 	#OK
 	def tuppletsWhichRespectNConditions(self, listConds):
@@ -33,22 +35,9 @@ class Extraction(object):
 			return the sum of each  for the vector(dataframe)
 		'''
 		return vector.sum(axis = 0, skipna = False)/len(vector)
+	def sumUp2(self,vector):
+		return 	vector.sum(axis = 0, skipna = False)/len(self.vect)
 
-	def bigMatConstructor(self):
-		#print("ICI")
-		#print(self.bigMat)
-		#print(self.entitled)
-		ll = []
-		request = ""
-
-		for e in self.entitled:
-			#ind = e.find(',')
-			#e = e[:ind] + "" + e[ind:]
-			request += e+ " > 0"
-			ll.append(self.sumUp(self.getLinesWhichRespect(request)))
-			request=""
-		self.bigMat = pd.DataFrame(data= ll,index = self.entitled, columns=self.entitled).fillna(0)
-		print(self.bigMat)
 		
 	def assoc(self,v, vp):
 		dep = self.dep(v,vp)
@@ -57,29 +46,47 @@ class Extraction(object):
 		else:
 			return 1 - (1/dep)
 
-	def dep(self,cond,vp):
-		return cover(vp,self.subset(cond))/cover(vp,self.vect)
+	def dep(self,v,vp):
+		return self.cover(vp,self.subset(v))/self.cover(vp,self.vect)
 
-	"""def cover(self,vect):"""
+	def cover(self,vp,set):
+		#print(self.sumUp(set[vp]))
+		return self.sumUp(set[vp])
 
+	
+	def subset(self,v):
+		return self.getLinesFromVectAndCond(self.vect,v+">0")
+	
+	def dicAssocConstructor(self):
+		for i in self.entitled:
+			for j in self.entitled:
+				if i!=j:
+					#print(val,j)
+					a = self.assoc(i,j)
+					#if a>0:
+					self.sumUpAssoc[i][j] = a
 
+	def matFromDictConstructor(self):
+		self.dicAssocConstructor()
+		self.matFromDict = pd.DataFrame(self.sumUpAssoc)
+		return self.matFromDict.fillna(0)
 
+	def bigMatConstructor(self):
+		"""
+				Construit une matrice qui associe à quel point [0,1] un mot du vocabulaire
+				est lié à un autre.
+		"""
+		ll = []
+		request = ""
 
-	# voir comment appliquer la condition au dataframe
-	# v est une simple propriété ou une vraie condition ? 	
-	def subset(self,cond):
-		return self.vect[cond]
-
-	"""def runExtraction(self):
-		'''
-			create the dict with each property and its significant 
-			correlated properties (with assoc >= self.border)
-		'''
-		for i in range(len(self.entitled)-1):
-			for j in range(i+1,len(self.entitled)-1)
-			a = assoc(self.entitled[i], self.entitled[j])
-			if a >= self.border:
-				self.sumUpAssoc[self.entitled[i]].append(self.entitled[i+1])"""
+		for e in self.entitled:
+			#ind = e.find(',')
+			#e = e[:ind] + "" + e[ind:]
+			request += e+ " > 0"
+			ll.append(self.sumUp2(self.getLinesWhichRespect(request)))
+			request=""
+		self.bigMat = pd.DataFrame(data= ll,index = self.entitled, columns=self.entitled).fillna(0)
+		print(self.bigMat)
 
 """if __name__ == "__main__":"""
  	
